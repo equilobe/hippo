@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { faBackward, faTrash, faSave } from '@fortawesome/free-solid-svg-icons';
-import { ChannelService, EnvironmentVariableService } from 'src/app/core/api/v1';
+import { ChannelService, EnvironmentVariableService, Operation, OperationType } from 'src/app/core/api/v1';
 
 @Component({
 	selector: 'app-environment-variable-list',
@@ -62,9 +62,16 @@ export class ListComponent implements OnInit {
 	}
 
 	save() {
-		this.channelService.apiChannelChannelIdEnvironmentVariablesPut(this.channelId, {
-			environmentVariables: this.envvars
-		}).subscribe({
+		let patchObject: Operation[] = [];
+		let operation: Operation = {
+			op: OperationType.Replace,
+			path: '/environmentVariables',
+			value: this.envvars
+		};
+
+		patchObject.push(operation);
+
+		this.channelService.apiChannelChannelIdPatch(this.channelId, patchObject).subscribe({
 			next: () => {
 				this.refreshData();
 				this.submitted = true;

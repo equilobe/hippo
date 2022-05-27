@@ -39,6 +39,8 @@ model/environmentVariableDto.ts
 model/environmentVariablesVm.ts
 model/getChannelLogsVm.ts
 model/models.ts
+model/operation.ts
+model/operationType.ts
 model/registerRevisionCommand.ts
 model/revision.ts
 model/revisionComponent.ts
@@ -51,7 +53,5 @@ model/tokenInfo.ts
 model/updateAppCommand.ts
 model/updateCertificateCommand.ts
 model/updateChannelCommand.ts
-model/updateChannelEnvironmentVariablesCommand.ts
 model/updateEnvironmentVariableCommand.ts
-model/updateEnvironmentVariableDto.ts
 variables.ts

@@ -34,7 +34,7 @@ export interface Channel {
     portId?: number;
     appId?: string;
     app?: App;
-    readonly environmentVariables?: Array<EnvironmentVariable> | null;
+    environmentVariables?: Array<EnvironmentVariable> | null;
     domainEvents?: Array<DomainEvent> | null;
 }
 

@@ -1,5 +1,3 @@
-using System.Text;
-using System.Text.Json.Serialization;
 using FluentValidation.AspNetCore;
 using Hippo.Application;
 using Hippo.Application.Common.Interfaces;
@@ -14,6 +12,8 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,11 +32,12 @@ builder.Services.AddHealthChecks()
             .AddCheck<NomadHealthCheck>("Nomad");
 
 builder.Services.AddControllers()
+    .AddNewtonsoftJson()
     .AddJsonOptions(opt =>
     {
         opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     })
-    .AddFluentValidation();
+    .AddFluentValidation(); ;
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 

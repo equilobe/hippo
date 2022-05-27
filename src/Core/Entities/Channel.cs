@@ -26,7 +26,7 @@ public class Channel : AuditableEntity, IHasDomainEvent
 
     public App App { get; set; } = null!;
 
-    public IList<EnvironmentVariable> EnvironmentVariables { get; private set; } = new List<EnvironmentVariable>();
+    public IList<EnvironmentVariable> EnvironmentVariables { get; set; } = new List<EnvironmentVariable>();
 
     public List<DomainEvent> DomainEvents { get; set; } = new List<DomainEvent>();
 }
