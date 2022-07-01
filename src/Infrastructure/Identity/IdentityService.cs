@@ -1,30 +1,22 @@
 using Hippo.Application.Common.Interfaces;
-using Hippo.Application.Common.Models;
 using Hippo.Application.Common.Security;
 using Hippo.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Crypto.Generators;
 
 namespace Hippo.Infrastructure.Identity;
 
 public class IdentityService : IIdentityService
 {
-    private readonly IUserClaimsPrincipalFactory<Account> _userClaimsPrincipalFactory;
-
-    private readonly IAuthorizationService _authorizationService;
-
     private readonly IApplicationDbContext _applicationDbContext;
+    private readonly PasswordHasher _passwordHasher;
 
     public IdentityService(
-            IApplicationDbContext applicationDbContext,
-            IUserClaimsPrincipalFactory<Account> userClaimsPrincipalFactory,
-            IAuthorizationService authorizationService)
+            IApplicationDbContext applicationDbContext, PasswordHasher passwordHasher)
     {
-        _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
-        _authorizationService = authorizationService;
         _applicationDbContext = applicationDbContext;
+        _passwordHasher = passwordHasher;   
     }
 
     public async Task<string> GetUserNameAsync(string userId)
@@ -47,7 +39,7 @@ public class IdentityService : IIdentityService
         {
             Username = username,
             Email = email,
-            Password = password,
+            Password = _passwordHasher.HashPassword(password),
             Role = role,
         };
 

@@ -7,10 +7,12 @@ namespace Hippo.Infrastructure.Identity;
 public class SignInService : ISignInService
 {
     private readonly IApplicationDbContext _applicationDbContext;
+    private readonly PasswordHasher _passwordHasher;
 
-    public SignInService(IApplicationDbContext applicationDbContext)
+    public SignInService(IApplicationDbContext applicationDbContext, PasswordHasher passwordHasher)
     {
         _applicationDbContext = applicationDbContext;
+        _passwordHasher = passwordHasher;
     }
 
     public async Task<Result> PasswordSignInAsync(string username, string password, bool rememberMe = false)
@@ -22,7 +24,7 @@ public class SignInService : ISignInService
             return Result.Failure(new string[] { "Account does not exist." });
         }
 
-        return user.Password == password ? Result.Success() : Result.Failure(new string[] { "Password is not valid." });
+        return _passwordHasher.VerifyHashedPassword(user.Password, password);
     }
 
     public async Task<Unit> SignOutAsync()
