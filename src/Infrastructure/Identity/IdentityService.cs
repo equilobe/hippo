@@ -1,104 +1,67 @@
 using Hippo.Application.Common.Interfaces;
 using Hippo.Application.Common.Models;
+using Hippo.Application.Common.Security;
+using Hippo.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Crypto.Generators;
 
 namespace Hippo.Infrastructure.Identity;
 
 public class IdentityService : IIdentityService
 {
-    private readonly UserManager<Account> _userManager;
-
     private readonly IUserClaimsPrincipalFactory<Account> _userClaimsPrincipalFactory;
 
     private readonly IAuthorizationService _authorizationService;
 
+    private readonly IApplicationDbContext _applicationDbContext;
+
     public IdentityService(
-            UserManager<Account> userManager,
+            IApplicationDbContext applicationDbContext,
             IUserClaimsPrincipalFactory<Account> userClaimsPrincipalFactory,
             IAuthorizationService authorizationService)
     {
-        _userManager = userManager;
         _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
         _authorizationService = authorizationService;
+        _applicationDbContext = applicationDbContext;
     }
 
     public async Task<string> GetUserNameAsync(string userId)
     {
-        var user = await _userManager.Users.FirstAsync(u => u.Id == userId);
-        return user.UserName;
+        var user = await _applicationDbContext.Users.FirstAsync(u => u.Id == Guid.Parse(userId));
+        return user.Username;
     }
 
-    public async Task<string> GetUserIdAsync(string userName)
+    public async Task<string> GetUserIdAsync(string username)
     {
-        var user = await _userManager.Users.FirstAsync(u => u.UserName == userName);
-        return user.Id;
+        var user = await _applicationDbContext.Users.FirstAsync(u => u.Username == username);
+        return user.Id.ToString();
     }
 
-    public async Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password)
+    public async Task<Guid> CreateUserAsync(string username, string? email, string password)
     {
-        var user = new Account
+        var role = (_applicationDbContext.Users.Any()) ? UserRole.Administrator : UserRole.Standard;
+
+        var user = new User
         {
-            UserName = userName,
-            Email = userName
+            Username = username,
+            Email = email,
+            Password = password,
+            Role = role,
         };
 
-        var result = await _userManager.CreateAsync(user, password);
+        await _applicationDbContext.Users.AddAsync(user);
 
-        return (result.ToApplicationResult(), user.Id);
+        await _applicationDbContext.SaveChangesAsync(new CancellationToken()); 
+
+        return user.Id;
     }
 
     public async Task<bool> IsInRoleAsync(string userId, string role)
     {
-        var user = _userManager.Users.SingleOrDefault(u => u.Id == userId);
+        var user = await _applicationDbContext.Users.SingleOrDefaultAsync(u => u.Id == Guid.Parse(userId));
 
-        return user is not null && await _userManager.IsInRoleAsync(user, role);
-    }
-
-    public async Task<bool> AuthorizeAsync(string userId, string policyName)
-    {
-        var user = _userManager.Users.SingleOrDefault(u => u.Id == userId);
-        if (user is null)
-        {
-            return false;
-        }
-
-        var principal = await _userClaimsPrincipalFactory.CreateAsync(user);
-
-        var result = await _authorizationService.AuthorizeAsync(principal, policyName);
-
-        return result.Succeeded;
-    }
-
-    public async Task<Result> DeleteUserAsync(string userId)
-    {
-        var user = _userManager.Users.SingleOrDefault(u => u.Id == userId);
-
-        return user is not null ? await DeleteUserAsync(user) : Result.Success();
-    }
-
-    public async Task<Result> DeleteUserAsync(Account user)
-    {
-        var result = await _userManager.DeleteAsync(user);
-
-        return result.ToApplicationResult();
-    }
-
-    public async Task<bool> CheckPasswordAsync(string userName, string password)
-    {
-        var user = _userManager.Users.SingleOrDefault(u => u.UserName == userName);
-
-        if (user is null)
-        {
-            return false;
-        }
-
-        return await _userManager.CheckPasswordAsync(user, password);
-    }
-
-    public async Task<string[]> GetUserNamesAsync()
-    {
-        return await _userManager.Users.Select(a => a.UserName).ToArrayAsync();
+        return user is not null && user.Role == role;
     }
 }

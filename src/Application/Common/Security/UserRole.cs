@@ -9,4 +9,9 @@ public static class UserRole
     /// Administrator account (full access)
     /// </summary>
     public const string Administrator = "Administrator";
+
+    /// <summary>
+    /// Standard account (basic access)
+    /// </summary>
+    public const string Standard = "Standard";
 }

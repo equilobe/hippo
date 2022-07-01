@@ -11,10 +11,12 @@ namespace Hippo.Application.Accounts.Commands;
 public class CreateAccountCommand : IRequest<string>
 {
     [Required]
-    public string UserName { get; set; } = "";
+    public string Username { get; set; } = string.Empty;
+
+    public string? Email { get; set; } 
 
     [Required]
-    public string Password { get; set; } = "";
+    public string Password { get; set; } = string.Empty;
 }
 
 public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand, string>
@@ -49,7 +51,7 @@ public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand,
                 }
         }
 
-        var result = await _identityService.CreateUserAsync(request.UserName, request.Password);
-        return result.UserId;
+        var result = await _identityService.CreateUserAsync(request.Username, request.Email, request.Password);
+        return result.ToString();
     }
 }

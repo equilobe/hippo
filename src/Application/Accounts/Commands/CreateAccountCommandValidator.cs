@@ -14,7 +14,7 @@ public class CreateAccountCommandValidator : AbstractValidator<CreateAccountComm
     {
         _identityService = identityService;
 
-        RuleFor(a => a.UserName)
+        RuleFor(a => a.Username)
             .NotEmpty().WithMessage("The username cannot be empty")
             .MaximumLength(64).WithMessage("The username cannot be longer than 64 characters")
             .Matches(validUserName).WithMessage("The username cannot contain special characters")
@@ -25,11 +25,11 @@ public class CreateAccountCommandValidator : AbstractValidator<CreateAccountComm
             .MinimumLength(6).WithMessage("The password must be at least 6 characters long");
     }
 
-    public async Task<bool> BeUniqueUserName(string userName, CancellationToken cancellationToken)
+    public async Task<bool> BeUniqueUserName(string username, CancellationToken cancellationToken)
     {
         try
         {
-            await _identityService.GetUserIdAsync(userName);
+            await _identityService.GetUserIdAsync(username);
             return false;
         }
         catch (Exception)

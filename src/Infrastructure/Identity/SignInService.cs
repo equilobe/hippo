@@ -1,39 +1,32 @@
 using Hippo.Application.Common.Interfaces;
 using Hippo.Application.Common.Models;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 
 namespace Hippo.Infrastructure.Identity;
 
 public class SignInService : ISignInService
 {
-    private readonly SignInManager<Account> _signInManager;
+    private readonly IApplicationDbContext _applicationDbContext;
 
-    private readonly UserManager<Account> _userManager;
-
-    public SignInService(SignInManager<Account> signInManager, UserManager<Account> userManager)
+    public SignInService(IApplicationDbContext applicationDbContext)
     {
-        _signInManager = signInManager;
-        _userManager = userManager;
+        _applicationDbContext = applicationDbContext;
     }
 
     public async Task<Result> PasswordSignInAsync(string username, string password, bool rememberMe = false)
     {
-        var user = _userManager.Users.SingleOrDefault(u => u.UserName == username);
+        var user = _applicationDbContext.Users.SingleOrDefault(u => u.Username == username);
 
         if (user is null)
         {
             return Result.Failure(new string[] { "Account does not exist." });
         }
 
-        var result = await _signInManager.PasswordSignInAsync(user, password, rememberMe, false);
-
-        return result.ToApplicationResult();
+        return user.Password == password ? Result.Success() : Result.Failure(new string[] { "Password is not valid." });
     }
 
     public async Task<Unit> SignOutAsync()
     {
-        await _signInManager.SignOutAsync();
         return Unit.Value;
     }
 }

@@ -43,6 +43,8 @@ public class ApplicationDbContext : IdentityDbContext<Account>, IApplicationDbCo
 
     public DbSet<RevisionComponent> RevisionComponents => Set<RevisionComponent>();
 
+    public DbSet<User> Users => Set<User>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

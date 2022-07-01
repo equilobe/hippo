@@ -8,7 +8,7 @@ namespace Hippo.Application.Accounts.Commands;
 public class CreateTokenCommand : IRequest<TokenInfo>
 {
     [Required]
-    public string UserName { get; set; } = "";
+    public string Username { get; set; } = "";
 
     [Required]
     public string Password { get; set; } = "";
@@ -29,12 +29,12 @@ public class CreateTokenCommandHandler : IRequestHandler<CreateTokenCommand, Tok
 
     public async Task<TokenInfo> Handle(CreateTokenCommand request, CancellationToken cancellationToken)
     {
-        var result = await _signInService.PasswordSignInAsync(request.UserName, request.Password);
+        var result = await _signInService.PasswordSignInAsync(request.Username, request.Password);
         if (!result.Succeeded)
         {
             throw new LoginFailedException(result.Errors);
         }
 
-        return _tokenService.CreateSecurityToken(await _identityService.GetUserIdAsync(request.UserName));
+        return _tokenService.CreateSecurityToken(await _identityService.GetUserIdAsync(request.Username));
     }
 }

@@ -23,7 +23,7 @@ public class CreateTokenTests : TestBase
             async () => await SendAsync(
                 new CreateTokenCommand
                 {
-                    UserName = userName,
+                    Username = userName,
                     Password = RandomString(10),
                 }
             )
