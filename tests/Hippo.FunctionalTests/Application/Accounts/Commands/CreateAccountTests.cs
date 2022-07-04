@@ -12,7 +12,7 @@ public class CreateAccountTests : TestBase
     {
         var command = new CreateAccountCommand
         {
-            UserName = "bob",
+            Username = "bob",
             Password = "Passw0rd!"
         };
 
@@ -28,11 +28,11 @@ public class CreateAccountTests : TestBase
     [InlineData("bacongobbler4", "password")]
     [InlineData("bacongobbler5", "Password")]
     [InlineData("bacongobbler6", "123456")]
-    public void ShouldCreateAccount(string userName, string password)
+    public void ShouldCreateAccount(string username, string password)
     {
         var command = new CreateAccountCommand
         {
-            UserName = userName,
+            Username = username,
             Password = password
         };
 
@@ -47,11 +47,11 @@ public class CreateAccountTests : TestBase
     [InlineData("!@#$%^&*(){}[]<>\\|'\";:,./?=+", "Passw0rd!")]
     [InlineData("bacongobbler", "a")]
     [InlineData("bacongobbler", "12345")]
-    public async Task ShouldNotCreateAccount(string userName, string password)
+    public async Task ShouldNotCreateAccount(string username, string password)
     {
         var command = new CreateAccountCommand
         {
-            UserName = userName,
+            Username = username,
             Password = password
         };
 

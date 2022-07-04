@@ -10,12 +10,12 @@ public class CreateTokenTests : TestBase
     [Fact]
     public async Task ShouldRaiseLoginFailedException()
     {
-        var userName = RandomString(10);
+        var username = RandomString(10);
         var password = "Passw0rd!";
 
         await SendAsync(new CreateAccountCommand
         {
-            UserName = userName,
+            Username = username,
             Password = password
         });
 
@@ -23,7 +23,7 @@ public class CreateTokenTests : TestBase
             async () => await SendAsync(
                 new CreateTokenCommand
                 {
-                    Username = userName,
+                    Username = username,
                     Password = RandomString(10),
                 }
             )
