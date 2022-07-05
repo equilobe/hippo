@@ -24,7 +24,7 @@ public class RequestLoggerTests
     }
 
     [Fact]
-    public async Task ShouldCallGetUserNameAsyncOnceIfAuthenticated()
+    public async Task ShouldCallGetUsernameAsyncOnceIfAuthenticated()
     {
         _currentUserService.Setup(x => x.UserId).Returns(Guid.NewGuid().ToString());
 
@@ -32,16 +32,16 @@ public class RequestLoggerTests
 
         await requestLogger.Process(new CreateAppCommand { Name = "helloworld", StorageId = "bacongobbler/helloworld" }, new CancellationToken());
 
-        _identityService.Verify(i => i.GetUserNameAsync(It.IsAny<string>()), Times.Once);
+        _identityService.Verify(i => i.GetUsernameAsync(It.IsAny<string>()), Times.Once);
     }
 
     [Fact]
-    public async Task ShouldNotCallGetUserNameAsyncOnceIfUnauthenticated()
+    public async Task ShouldNotCallGetUsernameAsyncOnceIfUnauthenticated()
     {
         var requestLogger = new LoggingBehaviour<CreateAppCommand>(_logger.Object, _currentUserService.Object, _identityService.Object);
 
         await requestLogger.Process(new CreateAppCommand { Name = "helloworld", StorageId = "bacongobbler/helloworld" }, new CancellationToken());
 
-        _identityService.Verify(i => i.GetUserNameAsync(It.IsAny<string>()), Times.Never);
+        _identityService.Verify(i => i.GetUsernameAsync(It.IsAny<string>()), Times.Never);
     }
 }

@@ -4,7 +4,7 @@ namespace Hippo.Application.Common.Interfaces;
 
 public interface IIdentityService
 {
-    Task<string> GetUserNameAsync(string userId);
+    Task<string> GetUsernameAsync(string userId);
 
     Task<string> GetUserIdAsync(string username);
 

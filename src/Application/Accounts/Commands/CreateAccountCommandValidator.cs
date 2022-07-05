@@ -8,7 +8,7 @@ public class CreateAccountCommandValidator : AbstractValidator<CreateAccountComm
 {
     private readonly IIdentityService _identityService;
 
-    private readonly Regex validUserName = new Regex("^[a-zA-Z0-9-_]*$");
+    private readonly Regex validUsername = new Regex("^[a-zA-Z0-9-_]*$");
 
     public CreateAccountCommandValidator(IIdentityService identityService)
     {
@@ -17,15 +17,15 @@ public class CreateAccountCommandValidator : AbstractValidator<CreateAccountComm
         RuleFor(a => a.Username)
             .NotEmpty().WithMessage("The username cannot be empty")
             .MaximumLength(64).WithMessage("The username cannot be longer than 64 characters")
-            .Matches(validUserName).WithMessage("The username cannot contain special characters")
-            .MustAsync(BeUniqueUserName).WithMessage("The specified username already exists.");
+            .Matches(validUsername).WithMessage("The username cannot contain special characters")
+            .MustAsync(BeUniqueUsername).WithMessage("The specified username already exists.");
 
         RuleFor(a => a.Password)
             .NotEmpty().WithMessage("The password cannot be empty")
             .MinimumLength(6).WithMessage("The password must be at least 6 characters long");
     }
 
-    public async Task<bool> BeUniqueUserName(string username, CancellationToken cancellationToken)
+    public async Task<bool> BeUniqueUsername(string username, CancellationToken cancellationToken)
     {
         try
         {

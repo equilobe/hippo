@@ -12,7 +12,7 @@
 
 
 export interface CreateAccountCommand { 
-    userName: string;
+    username: string;
     password: string;
 }
 

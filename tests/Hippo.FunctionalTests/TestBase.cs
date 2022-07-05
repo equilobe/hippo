@@ -118,13 +118,13 @@ public class TestBase : IDisposable
         return await RunAsUserAsync("administrator@local", "Administrator1234!", new[] { UserRole.Administrator });
     }
 
-    public static async Task<string> RunAsUserAsync(string userName, string password, string[] roles)
+    public static async Task<string> RunAsUserAsync(string username, string password, string[] roles)
     {
         using var scope = _scopeFactory.CreateScope();
 
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Account>>();
 
-        var user = new Account { UserName = userName, Email = userName };
+        var user = new Account { UserName = username, Email = username };
 
         var result = await userManager.CreateAsync(user, password);
 
@@ -149,7 +149,7 @@ public class TestBase : IDisposable
 
         var errors = string.Join(Environment.NewLine, result.ToApplicationResult().Errors);
 
-        throw new Exception($"Unable to create {userName}.{Environment.NewLine}{errors}");
+        throw new Exception($"Unable to create {username}.{Environment.NewLine}{errors}");
     }
 
     public static async Task<TEntity?> FindAsync<TEntity>(params object[] keyValues)

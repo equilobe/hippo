@@ -1,8 +1,6 @@
 using Hippo.Application.Common.Interfaces;
 using Hippo.Application.Common.Security;
 using Hippo.Core.Entities;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hippo.Infrastructure.Identity;
@@ -10,16 +8,14 @@ namespace Hippo.Infrastructure.Identity;
 public class IdentityService : IIdentityService
 {
     private readonly IApplicationDbContext _applicationDbContext;
-    private readonly PasswordHasher _passwordHasher;
 
     public IdentityService(
-            IApplicationDbContext applicationDbContext, PasswordHasher passwordHasher)
+            IApplicationDbContext applicationDbContext)
     {
-        _applicationDbContext = applicationDbContext;
-        _passwordHasher = passwordHasher;   
+        _applicationDbContext = applicationDbContext;   
     }
 
-    public async Task<string> GetUserNameAsync(string userId)
+    public async Task<string> GetUsernameAsync(string userId)
     {
         var user = await _applicationDbContext.Users.FirstAsync(u => u.Id == Guid.Parse(userId));
         return user.Username;
@@ -33,13 +29,13 @@ public class IdentityService : IIdentityService
 
     public async Task<Guid> CreateUserAsync(string username, string? email, string password)
     {
-        var role = (_applicationDbContext.Users.Any()) ? UserRole.Administrator : UserRole.Standard;
+        var role = _applicationDbContext.Users.Any() ? UserRole.Standard : UserRole.Administrator;
 
         var user = new User
         {
             Username = username,
             Email = email,
-            Password = _passwordHasher.HashPassword(password),
+            Password = BCrypt.Net.BCrypt.HashPassword(password),
             Role = role,
         };
 

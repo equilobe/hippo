@@ -60,8 +60,6 @@ public static class DependencyInjection
 
         services.AddTransient<IJobService, NomadJobService>();
 
-        services.AddTransient<PasswordHasher>();
-
         services.Configure<IdentityOptions>(options =>
         {
             options.Password.RequireDigit = false;

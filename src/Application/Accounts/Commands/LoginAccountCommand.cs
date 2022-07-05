@@ -8,7 +8,7 @@ namespace Hippo.Application.Accounts.Commands;
 public class LoginAccountCommand : IRequest
 {
     [Required]
-    public string UserName { get; set; } = "";
+    public string Username { get; set; } = "";
 
     [Required]
     public string Password { get; set; } = "";
@@ -29,7 +29,7 @@ public class LoginAccountCommandHandler : IRequestHandler<LoginAccountCommand>
 
     public async Task<Unit> Handle(LoginAccountCommand request, CancellationToken cancellationToken)
     {
-        var result = await _signInService.PasswordSignInAsync(request.UserName, request.Password, request.RememberMe);
+        var result = await _signInService.PasswordSignInAsync(request.Username, request.Password, request.RememberMe);
         if (!result.Succeeded)
         {
             throw new LoginFailedException(result.Errors);

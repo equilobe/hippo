@@ -21,14 +21,14 @@ public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where T
     {
         var requestName = typeof(TRequest).Name;
         var userId = _currentUserService.UserId ?? string.Empty;
-        string userName = string.Empty;
+        string username = string.Empty;
 
         if (!string.IsNullOrEmpty(userId))
         {
-            userName = await _identityService.GetUserNameAsync(userId);
+            username = await _identityService.GetUsernameAsync(userId);
         }
 
-        _logger.LogInformation("Hippo Request: {Name} {@UserId} {@UserName} {@Request}",
-            requestName, userId, userName, request);
+        _logger.LogInformation("Hippo Request: {Name} {@UserId} {@Username} {@Request}",
+            requestName, userId, username, request);
     }
 }

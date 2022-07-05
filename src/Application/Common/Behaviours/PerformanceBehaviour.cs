@@ -38,15 +38,15 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
         {
             var requestName = typeof(TRequest).Name;
             var userId = _currentUserService.UserId ?? string.Empty;
-            var userName = string.Empty;
+            var username = string.Empty;
 
             if (!string.IsNullOrEmpty(userId))
             {
-                userName = await _identityService.GetUserNameAsync(userId);
+                username = await _identityService.GetUsernameAsync(userId);
             }
 
-            _logger.LogWarning("Hippo Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@UserId} {@UserName} {@Request}",
-                requestName, elapsedMilliseconds, userId, userName, request);
+            _logger.LogWarning("Hippo Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@UserId} {@Username} {@Request}",
+                requestName, elapsedMilliseconds, userId, username, request);
         }
 
         return response;

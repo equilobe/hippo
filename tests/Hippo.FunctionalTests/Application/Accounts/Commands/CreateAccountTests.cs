@@ -8,7 +8,7 @@ namespace Hippo.FunctionalTests.Application.Accounts.Commands;
 public class CreateAccountTests : TestBase
 {
     [Fact]
-    public async Task ShouldRequireUniqueUserName()
+    public async Task ShouldRequireUniqueUsername()
     {
         var command = new CreateAccountCommand
         {
