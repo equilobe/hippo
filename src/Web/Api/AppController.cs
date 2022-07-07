@@ -1,5 +1,6 @@
 using Hippo.Application.Apps.Commands;
 using Hippo.Application.Apps.Queries;
+using Hippo.Application.Common.Interfaces;
 using Hippo.Core.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -10,6 +11,13 @@ namespace Hippo.Web.Api;
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class AppController : ApiControllerBase
 {
+    private readonly ICurrentUserService _currentUserService;
+
+    public AppController(ICurrentUserService currentUserService)
+    {
+        _currentUserService = currentUserService;
+    }
+
     [HttpGet]
     public async Task<ActionResult<Page<AppItem>>> Index(
         [FromQuery] string searchText = "",
@@ -39,6 +47,7 @@ public class AppController : ApiControllerBase
     [HttpPost]
     public async Task<ActionResult<Guid>> Create([FromBody] CreateAppCommand command)
     {
+        command.CreatedBy = _currentUserService.UserId;
         return await Mediator.Send(command);
     }
 

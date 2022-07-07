@@ -1,5 +1,6 @@
 using Hippo.Application.Common.Interfaces;
 using Hippo.Application.Common.Models;
+using Hippo.Application.Common.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -45,6 +46,11 @@ public class IdentityService : IIdentityService
         };
 
         var result = await _userManager.CreateAsync(user, password);
+
+        if (result.Succeeded && _userManager.Users.Count() == 1)
+        {
+            await _userManager.AddToRoleAsync(user, UserRole.Administrator);
+        }
 
         return (result.ToApplicationResult(), user.Id);
     }
