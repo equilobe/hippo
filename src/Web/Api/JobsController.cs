@@ -8,18 +8,18 @@ namespace Hippo.Web.Api;
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class JobsController : ApiControllerBase
 {
-    [HttpPost]
-    public async Task<IActionResult> StopJob([FromBody] StopJobCommand command)
+    [HttpPost("{id}/start")]
+    public async Task<IActionResult> StartJob([FromRoute] Guid id)
     {
-        await Mediator.Send(command);
+        await Mediator.Send(new StartJobCommand { JobName = id.ToString()});
 
         return NoContent();
     }
 
-    [HttpPost]
-    public async Task<IActionResult> StartJob([FromBody] StartJobCommand command)
+    [HttpPost("{id}/stop")]
+    public async Task<IActionResult> StopJob([FromRoute] Guid id)
     {
-        await Mediator.Send(command);
+        await Mediator.Send(new StopJobCommand { JobName = id.ToString() });
 
         return NoContent();
     }
