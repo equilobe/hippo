@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using FluentValidation;
 using Hippo.Application.Common.Interfaces;
+using Hippo.Application.EnvironmentVariables.Commands;
 using Hippo.Core.Enums;
 using Hippo.Core.Models;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,8 @@ public class PatchChannelCommandValidator : AbstractValidator<PatchChannelComman
     private readonly Regex validName = new Regex("^[a-zA-Z0-9-_]*$");
 
     private readonly Regex validDomainName = new Regex(@"^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$");
+
+    private readonly Regex validKey = new Regex("^[a-zA-Z0-9-_]*$");
 
     private readonly IApplicationDbContext _context;
 
@@ -39,6 +42,11 @@ public class PatchChannelCommandValidator : AbstractValidator<PatchChannelComman
             .Must(BeValidRevisionSelectionStrategy).WithMessage("ActiveRevisionId and the specified ChannelRevisionSelectionStrategy do not match up.")
             .When(v => v.RevisionSelectionStrategy.IsSet());
 
+        RuleFor(v => v.EnvironmentVariables.Value)
+            .Must(HaveValidKeys).WithMessage("Keys are not valid.")
+            .Must(HaveValidValues).WithMessage("Values must not be empty.")
+            .When(v => v.EnvironmentVariables.IsSet()); ;
+
         // TODO: validate RangeRule syntax
     }
 
@@ -60,5 +68,33 @@ public class PatchChannelCommandValidator : AbstractValidator<PatchChannelComman
     {
         return (revisionStrategy == ChannelRevisionSelectionStrategy.UseRangeRule && command.ActiveRevisionId is null) ||
             (revisionStrategy == ChannelRevisionSelectionStrategy.UseSpecifiedRevision && command.ActiveRevisionId is not null);
+    }
+
+    public bool HaveValidKeys(PatchChannelCommand command, List<UpdateEnvironmentVariableDto>? environmentVariables)
+    {
+        if (environmentVariables == null)
+            return false;
+
+        foreach(var variable in environmentVariables)
+        {
+            if (variable.Key == string.Empty || !validKey.IsMatch(variable.Key))
+                return false;
+        }
+
+        return true;
+    }
+
+    public bool HaveValidValues(PatchChannelCommand command, List<UpdateEnvironmentVariableDto>? environmentVariables)
+    {
+        if (environmentVariables == null)
+            return false;
+
+        foreach (var variable in environmentVariables)
+        {
+            if (variable.Value == null)
+                return false;
+        }
+
+        return true;
     }
 }

@@ -89,7 +89,6 @@ export class ListComponent implements OnChanges {
         if (!this.validateEnvVars()) {
             return;
         }
-        console.log(this.envvars);
         this.channelService
             .apiChannelIdPatch(this.channelId, {
                 environmentVariables: this.envvars,
