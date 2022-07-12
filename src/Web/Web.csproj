@@ -56,6 +56,11 @@
 		<RemoveDir Directories="$(SpaRoot)\node_modules" />
 	</Target>
 
+	<Target Name="Generate OpenAPI Specification Document" AfterTargets="Build">
+		<Exec EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" Command="dotnet swagger tofile --output $(SpaRoot)\swagger.json $(OutputPath)\$(AssemblyName).dll v1" />
+		<Exec WorkingDirectory="$(SpaRoot)\" Command="npm run generate:api:file" />
+	</Target>
+
 	<ItemGroup>
 		<PackageReference Include="FluentValidation.AspNetCore" Version="10.4.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.6" />
