@@ -107,4 +107,11 @@ public class IdentityService : IIdentityService
     {
         return await _userManager.Users.Select(a => a.UserName).ToArrayAsync();
     }
+    
+    public async Task<IList<string>> GetUserRolesAsync(string userId)
+    {
+        var user = _userManager.Users.Single(u => u.Id == userId);
+
+        return await _userManager.GetRolesAsync(user);
+    }
 }

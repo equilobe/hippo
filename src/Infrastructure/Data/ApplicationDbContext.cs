@@ -4,6 +4,7 @@ using Hippo.Core.Entities;
 using Hippo.Infrastructure.Data.Interceptors;
 using Hippo.Infrastructure.Identity;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,22 +14,30 @@ public class ApplicationDbContext : IdentityDbContext<Account>, IApplicationDbCo
 {
     private readonly IMediator _mediator;
     private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor;
+    private readonly ICurrentUserService _currentUserService;
+
+    private string? UserId => _currentUserService.UserId;
+    private bool IsAdministrator => _currentUserService.IsAdministrator;
 
     public ApplicationDbContext(
             DbContextOptions<ApplicationDbContext> options,
             IMediator mediator,
-            AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor) : base(options)
+            AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor,
+            ICurrentUserService currentUserService) : base(options)
     {
         _mediator = mediator;
         _auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
+        _currentUserService = currentUserService;
     }
 
     public ApplicationDbContext(
             IMediator mediator,
-            AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor)
+            AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor,
+            ICurrentUserService currentUserService)
     {
         _mediator = mediator;
         _auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
+        _currentUserService = currentUserService;
     }
 
     public DbSet<App> Apps => Set<App>();
@@ -46,7 +55,9 @@ public class ApplicationDbContext : IdentityDbContext<Account>, IApplicationDbCo
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-
+        
+        builder.Entity<App>().HasQueryFilter(a => a.CreatedBy == UserId || IsAdministrator);
+        
         base.OnModelCreating(builder);
     }
 

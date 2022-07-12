@@ -1,3 +1,4 @@
+using Hippo.Application.Common.Interfaces;
 using Hippo.Infrastructure.Data.Interceptors;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,8 @@ public class PostgresqlDbContext : ApplicationDbContext
     public PostgresqlDbContext(
         IConfiguration configuration,
         IMediator mediator,
-        AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor) : base(mediator, auditableEntitySaveChangesInterceptor)
+        AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor,
+        ICurrentUserService currentUserService) : base(mediator, auditableEntitySaveChangesInterceptor, currentUserService)
     {
         Configuration = configuration;
     }

@@ -35,6 +35,6 @@ public class CreateTokenCommandHandler : IRequestHandler<CreateTokenCommand, Tok
             throw new LoginFailedException(result.Errors);
         }
 
-        return _tokenService.CreateSecurityToken(await _identityService.GetUserIdAsync(request.UserName));
+        return await _tokenService.CreateSecurityToken(await _identityService.GetUserIdAsync(request.UserName));
     }
 }

@@ -19,7 +19,7 @@ public class TokenService : ITokenService
         _identityService = identityService;
     }
 
-    public TokenInfo CreateSecurityToken(string id)
+    public async Task<TokenInfo> CreateSecurityToken(string id)
     {
         var claims = new[]
         {
@@ -28,6 +28,13 @@ public class TokenService : ITokenService
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(ClaimTypes.NameIdentifier, id)
         };
+
+        var userRoles = await _identityService.GetUserRolesAsync(id);
+
+        foreach (var role in userRoles)
+        {
+            claims = claims.Append(new Claim(ClaimTypes.Role, role)).ToArray();
+        }
 
         var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
 

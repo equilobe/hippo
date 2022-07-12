@@ -1,3 +1,4 @@
+using Hippo.Application.Common.Interfaces;
 using Hippo.Infrastructure.Data.Interceptors;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,8 @@ public class SqliteDbContext : ApplicationDbContext
     public SqliteDbContext(
         IConfiguration configuration,
         IMediator mediator,
-        AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor) : base(mediator, auditableEntitySaveChangesInterceptor)
+        AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor,
+        ICurrentUserService currentUserService) : base(mediator, auditableEntitySaveChangesInterceptor, currentUserService)
     {
         Configuration = configuration;
     }
