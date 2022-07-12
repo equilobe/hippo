@@ -452,3 +452,6 @@ $RECYCLE.BIN/
 
 bindlecache
 bindleserver/data
+
+## OpenApiGenerator
+**/swagger.json
