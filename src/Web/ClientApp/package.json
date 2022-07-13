@@ -27,6 +27,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "bulma": "^0.9.4",
     "bulma-tooltip": "^3.0.2",
+    "hippo-themes": "github:fermyon/hippo-themes",
     "javascript-time-ago": "^2.5.6",
     "jdenticon": "^3.1.1",
     "ngx-jdenticon": "^1.0.4",
