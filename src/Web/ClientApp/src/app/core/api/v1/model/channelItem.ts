@@ -13,7 +13,7 @@ import { RevisionItem } from './revisionItem';
 import { ChannelRevisionSelectionStrategy } from './channelRevisionSelectionStrategy';
 import { CertificateItem } from './certificateItem';
 import { AppSummaryDto } from './appSummaryDto';
-import { EnvironmentVariableItem } from './environmentVariableItem';
+import { EnvironmentVariableDto } from './environmentVariableDto';
 
 
 export interface ChannelItem { 
@@ -26,7 +26,7 @@ export interface ChannelItem {
     lastPublishAt?: string | null;
     rangeRule?: string | null;
     certificate?: CertificateItem;
-    environmentVariables: Array<EnvironmentVariableItem>;
+    environmentVariables: Array<EnvironmentVariableDto>;
     appSummary?: AppSummaryDto;
 }
 
