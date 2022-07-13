@@ -19,6 +19,8 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
+import { ChannelJobStatusItem } from '../model/channelJobStatusItem';
+// @ts-ignore
 import { ChannelJobStatusItemPage } from '../model/channelJobStatusItemPage';
 
 // @ts-ignore

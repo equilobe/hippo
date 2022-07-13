@@ -12,6 +12,7 @@
 
 
 export interface UpdateEnvironmentVariableDto { 
+    id: string;
     key: string;
     value: string;
 }
