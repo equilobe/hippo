@@ -58,6 +58,7 @@
 	</Target>
 
 	<Target Name="Generate OpenAPI Specification Document" AfterTargets="Build">
+		<Exec ommand="dotnet tool restore" />
 		<Exec EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" Command="dotnet swagger tofile --output $(SpaRoot)\swagger.json $(OutputPath)\$(AssemblyName).dll v1" />
 		<Exec WorkingDirectory="$(SpaRoot)\" Command="npm run generate:api:file" />
 		<Exec WorkingDirectory="$(SpaRoot)\" Command="python .\generatorCleaner.py $(ApiClientRoot)" />
