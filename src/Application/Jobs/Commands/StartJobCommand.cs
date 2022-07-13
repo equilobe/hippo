@@ -34,7 +34,7 @@ public class StartJobCommandHandler : IRequestHandler<StartJobCommand>
             .Include(c => c.App)
             .Include(c => c.EnvironmentVariables)
             .Include(c => c.ActiveRevision)
-            .FirstOrDefaultAsync(c => c.Id.ToString() == request.JobName);
+            .FirstOrDefaultAsync(c => c.Id == Guid.Parse(request.JobName));
         if(channel is null)
         {
             throw new NotFoundException(nameof(Channel), request.JobName);

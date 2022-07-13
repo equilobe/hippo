@@ -62,7 +62,12 @@ public class NomadJobService : IJobService
             return new string[] { };
         }
 
-        var allocationData = _clientsClient.GetAllocationLogs(_taskName, _logSource, allocationId).Data.ToString();
+        var allocationData = _clientsClient.GetAllocationLogs(_taskName, _logSource, allocationId)?.Data.ToString();
+        if(allocationData is null)
+        {
+            return Array.Empty<string>();
+        }
+
         byte[] data = Convert.FromBase64String(allocationData);
         return Encoding.UTF8.GetString(data).Split("\n");
     }
