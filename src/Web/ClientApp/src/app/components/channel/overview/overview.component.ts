@@ -34,12 +34,13 @@ export class OverviewComponent implements OnChanges, OnInit, OnDestroy {
     loading = false;
     timeAgo: any;
 
+    jobStatus = JobStatus;
+
     interval: any = null;
     timeInterval = 5000;
 
     constructor(
         private readonly channelService: ChannelService,
-        private readonly jobStatusService: JobStatusService,
         private router: Router
     ) {
         TimeAgo.addDefaultLocale(en);
