@@ -47,11 +47,6 @@ public class IdentityService : IIdentityService
 
         var result = await _userManager.CreateAsync(user, password);
 
-        if (result.Succeeded && _userManager.Users.Count() == 1)
-        {
-            await _userManager.AddToRoleAsync(user, UserRole.Administrator);
-        }
-
         return (result.ToApplicationResult(), user.Id);
     }
 
