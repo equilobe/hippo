@@ -13,9 +13,6 @@ public class CreateAppCommand : IRequest<Guid>
 
     [Required]
     public string StorageId { get; set; } = "";
-
-    [Required]
-    public string? CreatedBy { get; set; } = null;
 }
 
 public class CreateAppCommandHandler : IRequestHandler<CreateAppCommand, Guid>
@@ -32,8 +29,7 @@ public class CreateAppCommandHandler : IRequestHandler<CreateAppCommand, Guid>
         var entity = new App
         {
             Name = request.Name,
-            StorageId = request.StorageId,
-            CreatedBy = request.CreatedBy,
+            StorageId = request.StorageId
         };
 
         entity.AddDomainEvent(new CreatedEvent<App>(entity));
