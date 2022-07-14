@@ -57,6 +57,14 @@ public class ApplicationDbContext : IdentityDbContext<Account>, IApplicationDbCo
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         
         builder.Entity<App>().HasQueryFilter(a => a.CreatedBy == UserId || IsAdministrator);
+
+        builder.Entity<Certificate>().HasQueryFilter(c => c.CreatedBy == UserId || IsAdministrator);
+
+        builder.Entity<Channel>().HasQueryFilter(ch => ch.App.CreatedBy == UserId || IsAdministrator);
+
+        builder.Entity<Revision>().HasQueryFilter(r => r.App.CreatedBy == UserId || IsAdministrator);
+
+        builder.Entity<RevisionComponent>().HasQueryFilter(rc => rc.Revision.App.CreatedBy == UserId || IsAdministrator);
         
         base.OnModelCreating(builder);
     }
